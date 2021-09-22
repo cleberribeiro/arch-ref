@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+
+  mongo:
+    image: mongo:5.0.3
+    container_name: mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: mongo2021
+    volumes:
+      - ./docker/mongodb/volumes/:/data/db
+    networks:
+    - arch-ref-network
+    
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    depends_on:
+      - mongo
+    links:
+      - "mongo"
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: mongo2021
+      ME_CONFIG_MONGODB_SERVER: "mongo"
+      ME_CONFIG_MONGODB_PORT: 27017
+    networks:
+    - arch-ref-network
+  
+  
+
+networks: 
+  arch-ref-network:
+    driver: bridge
