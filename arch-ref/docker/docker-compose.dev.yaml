@@ -4,15 +4,15 @@ services:
 
   app:
     build: 
-      context: ./docker/app/
-    entrypoint: ./docker/app/entrypoint.sh
+      context: ./app/
+    entrypoint: ./app/entrypoint.sh
     container_name: app
     depends_on:
       - mongo
     ports:
       - "3000:3000"
     volumes:
-      - .:/home/node/app
+      - ./:/home/node/app
     networks:
       - arch-ref-network
   
@@ -26,7 +26,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: mongo2021
     volumes:
-      - ./docker/mongodb/volumes/:/data/db
+      - ./mongodb/volumes/:/data/db
     networks:
     - arch-ref-network
     
