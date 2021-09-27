@@ -2,10 +2,26 @@ version: '3.8'
 
 services:
 
+  app:
+    build: 
+      context: ./docker/app/
+    entrypoint: ./docker/app/entrypoint.sh
+    container_name: app
+    depends_on:
+      - mongo
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/home/node/app
+    networks:
+      - arch-ref-network
+  
   mongo:
     image: mongo:5.0.3
     container_name: mongodb
     restart: always
+    ports:
+      - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: mongo2021
@@ -23,7 +39,7 @@ services:
       - "mongo"
     restart: always
     ports:
-      - 8081:8081
+      - "8081:8081"
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: mongo2021
@@ -32,8 +48,6 @@ services:
     networks:
     - arch-ref-network
   
-  
-
 networks: 
   arch-ref-network:
     driver: bridge
