@@ -4,15 +4,15 @@ services:
 
   app:
     build: 
-      context: ./app/
-    entrypoint: ./app/entrypoint.sh
+      context: ./app
+    entrypoint: ./docker/app/entrypoint.sh
     container_name: app
     depends_on:
       - mongo
     ports:
       - "3000:3000"
     volumes:
-      - ./:/home/node/app
+      - ../:/home/node/app
     networks:
       - arch-ref-network
   
