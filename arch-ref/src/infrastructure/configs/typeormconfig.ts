@@ -6,11 +6,9 @@ config();
 export const typeormConfig: TypeOrmModuleOptions = {
   type: 'mongodb',
   url: process.env.MONGODB_CONNECTION_STRING,
-  database: process.env.MONGODB_DATABASE,
   entities: [
-    __dirname + '/**/*.entity{.ts,.js}',
+    __dirname + '../../../../dist/infrastructure/repository/entities/*.entity{.ts,.js}',
   ],
-  ssl: true,
+  useNewUrlParser: true,
   useUnifiedTopology: true,
-  useNewUrlParser: true
 };
