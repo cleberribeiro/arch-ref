@@ -1,20 +1,21 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CreateDummy } from 'src/application/use-cases/create-dummy';
-import { Dummy } from 'src/infrastructure/repository/entities/dummy.entity';
-import { CreateDummyService } from 'src/domain/services/dummy/create-dummy/create-dummy.service';
+import { DummyEntity } from 'src/domain/entities/dummy/dummy.entity';
+import { CreateDummyService } from 'src/domain/services/dummy/create-dummy.service';
 import { typeormConfig } from 'src/infrastructure/configs/typeormconfig';
+import { DummyRepository } from 'src/infrastructure/repository/dummy.repository';
 import { DummyController } from 'src/interface/http/controllers/dummy/dummy.controller';
 
 @Module({
     imports: [
         TypeOrmModule.forRoot(typeormConfig),
-        TypeOrmModule.forFeature([Dummy]),
+        TypeOrmModule.forFeature([DummyEntity]),
       ],
     controllers: [DummyController],
     providers: [
-      CreateDummy,
-      CreateDummyService
+      CreateDummyService,
+      DummyRepository,
+      Logger
     ],
 })
 export class DatabaseModule {}
