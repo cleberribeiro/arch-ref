@@ -1,5 +1,11 @@
-import { Dummy } from 'src/domain/entities/dummy/dummy';
-
+import { ObjectID } from "typeorm";
+export interface Dummy {
+  id: ObjectID;
+  description: string;
+}
+export interface DummyCreate {
+  description: string;
+}
 export interface IDummyCreate {
-  create(data: Dummy): Dummy;
+  create(data: DummyCreate): Promise<Dummy>;
 }
