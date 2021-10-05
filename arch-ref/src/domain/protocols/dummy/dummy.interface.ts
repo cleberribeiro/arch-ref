@@ -9,3 +9,7 @@ export interface DummyCreate {
 export interface IDummyCreate {
   create(data: DummyCreate): Promise<Dummy>;
 }
+
+export interface IDummyGetAll {
+  findAll(): Promise<Dummy[]>;
+}
