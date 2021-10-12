@@ -49,7 +49,7 @@ services:
     - arch-ref-network
   
   redis:
-    image: redis
+    image: redis:alpine
     container_name: redis
     ports:
       - "6379:6379"
