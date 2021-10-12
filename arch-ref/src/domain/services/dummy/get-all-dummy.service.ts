@@ -10,7 +10,7 @@ export class GetAllDummyService implements IDummyGetAll {
     private logger: Logger
   ) {}
 
-  public async findAll(): Promise<any> {
+  public async findAll(): Promise<Dummy[]> {
     this.logger.log('Call service', 'GetAllDummyService.getAll');
     return this.dummyRepository.findAll();
   }
