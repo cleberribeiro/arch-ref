@@ -1,8 +1,9 @@
 import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DummyEntity } from 'src/domain/entities/dummy/dummy.entity';
-import { Dummy, DummyCreate } from 'src/domain/protocols/dummy/dummy.interface';
-import { MongoRepository } from 'typeorm';
+import { Dummy, DummyCreate, DummyUpdate } from 'src/domain/protocols/dummy/dummy.interface';
+import { MongoRepository, ObjectID as ObjectIDType } from 'typeorm';
+import { ObjectID } from 'mongodb';
 
 export class DummyRepository {
   constructor(
@@ -18,6 +19,21 @@ export class DummyRepository {
   public async findAll(): Promise<Dummy[]> {
     this.logger.log('Call DummyRepository', 'DummyRepository.getAll');
     return this.dummyRepository.find();
+  }
+
+  public async findById(id: ObjectIDType): Promise<Dummy> {
+    this.logger.log('Call DummyRepository', 'DummyRepository.findById');
+    return await this.dummyRepository.findOneOrFail({ where: { _id: new ObjectID(id) } });
+  }
+
+  public async update(id: ObjectIDType, data: DummyUpdate): Promise<any> {
+    this.logger.log('Call DummyRepository', 'DummyRepository.update');
+    return await this.dummyRepository.updateOne({ _id: new ObjectID(id) }, { $set: data }, { upsert: true } );
+  }
+
+  public async remove(id: ObjectIDType): Promise<Dummy> {
+    this.logger.log('Call DummyRepository', 'DummyRepository.findById');
+    return await this.dummyRepository.findOneOrFail({ where: { _id: new ObjectID(id) } });
   }
 
 }
