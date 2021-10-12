@@ -31,9 +31,9 @@ export class DummyRepository {
     return await this.dummyRepository.updateOne({ _id: new ObjectID(id) }, { $set: data }, { upsert: true } );
   }
 
-  public async remove(id: ObjectIDType): Promise<Dummy> {
-    this.logger.log('Call DummyRepository', 'DummyRepository.findById');
-    return await this.dummyRepository.findOneOrFail({ where: { _id: new ObjectID(id) } });
+  public async remove(id: ObjectIDType): Promise<any> {
+    this.logger.log('Call DummyRepository', 'DummyRepository.remove');
+    return await this.dummyRepository.findOneAndDelete({ _id: new ObjectID(id) });
   }
 
 }

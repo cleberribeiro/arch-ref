@@ -1,10 +1,10 @@
-import { Body, Controller, Get, InternalServerErrorException, Logger, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, InternalServerErrorException, Logger, Param, Post, Put } from '@nestjs/common';
 import { Dummy, DummyUpdate } from 'src/domain/protocols/dummy/dummy.interface';
 import { CreateDummyService } from 'src/domain/services/dummy/create-dummy.service';
 import { GetAllDummyService } from 'src/domain/services/dummy/get-all-dummy.service';
 import { GetOneDummyService } from 'src/domain/services/dummy/get-one-dummy.service';
+import { RemoveDummyService } from 'src/domain/services/dummy/remove-dummy.service';
 import { UpdateDummyService } from 'src/domain/services/dummy/update-dummy.service';
-import { ParseObjectIdPipe } from 'src/domain/validators/pipe/parse-object-id.pipe';
 import { ObjectID } from 'typeorm';
 import { DummyCreateDto } from '../../dto/dummy.dto';
 
@@ -15,6 +15,7 @@ export class DummyController {
     private getAllDummyService: GetAllDummyService,
     private getOneDummyService: GetOneDummyService,
     private updateDummyService: UpdateDummyService,
+    private removeDummyService: RemoveDummyService,
     private logger: Logger
   ) {}
   
@@ -57,6 +58,17 @@ export class DummyController {
       return await this.updateDummyService.update(id, data);
     } catch (error) {
       this.logger.error('Error Update Dummy', error);
+      throw new InternalServerErrorException('Internal error');
+    }
+  }
+
+  @Delete('/:id')
+  async remove(@Param('id') id: ObjectID): Promise<void> {
+    try {
+      this.logger.log('Starting remove Dummy', 'DummyController.remove');
+      return await this.removeDummyService.remove(id);
+    } catch (error) {
+      this.logger.error('Error remove Dummy', error);
       throw new InternalServerErrorException('Internal error');
     }
   }
