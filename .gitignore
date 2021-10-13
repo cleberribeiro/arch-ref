@@ -2,3 +2,4 @@
 **/dist/
 **/.env
 **/docker/mongodb/volumes/*
+**/docker/rabbitmq/data/*
