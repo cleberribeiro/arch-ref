@@ -8,7 +8,24 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
   const configService = app.get(ConfigService);
+  const user = configService.get('RABBITMQ_USER');
+  const password = configService.get('RABBITMQ_PASSWORD');
+  const host = configService.get('RABBITMQ_HOST');
+  const queueName = configService.get('RABBITMQ_QUEUE_NAME');
+
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: [`amqp://${user}:${password}@${host}`],
+      noAck: false,
+      queue: queueName,
+      queueOptions: {
+        durable: true,
+      },
+    },
+  });
 
   app.useGlobalPipes(new ValidationPipe());
   app.use(helmet());
@@ -21,7 +38,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-doc', app, document);
-
+  await app.startAllMicroservices();
   await app.listen(3000);
 }
 bootstrap();

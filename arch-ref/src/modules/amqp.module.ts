@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
-import SubscribersController from 'src/interface/amqp/controllers/subscribers.controller';
+import PublisherController from 'src/interface/amqp/outbound/controllers/publisher.controller';
  
 @Module({
   imports: [ConfigModule],
-  controllers: [SubscribersController],
+  controllers: [PublisherController],
   providers: [
     {
-      provide: 'SUBSCRIBERS_SERVICE',
+      provide: 'AMQP_SERVICE',
       useFactory: (configService: ConfigService) => {
         const user = configService.get('RABBITMQ_USER');
         const password = configService.get('RABBITMQ_PASSWORD');
@@ -19,6 +19,7 @@ import SubscribersController from 'src/interface/amqp/controllers/subscribers.co
           transport: Transport.RMQ,
           options: {
             urls: [`amqp://${user}:${password}@${host}`],
+            noAck: false,
             queue: queueName,
             queueOptions: {
               durable: true,
@@ -30,4 +31,4 @@ import SubscribersController from 'src/interface/amqp/controllers/subscribers.co
     }
   ],
 })
-export class SubscribersModule {}
+export class AmqpModule {}
