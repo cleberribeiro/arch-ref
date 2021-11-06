@@ -1,0 +1,74 @@
+import { CACHE_MANAGER } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import { User, UserCreate } from 'src/domain/protocols/user/user.interface';
+import { CreateUserService } from 'src/domain/services/user/create-user.service';
+import { UserRepository } from 'src/infrastructure/repository/user.repository';
+import { BcryptService } from 'src/utils/bcrypt/bcrypt.service';
+// import { Cache } from 'cache-manager';
+
+describe('Domain :: Services :: User :: CreateUserService', () => {
+
+  let cacheManager;
+  let userRepository;
+  let bcryptService;
+  let createUserService;
+
+  beforeEach(async () => {
+    const moduleRef: TestingModule = await Test.createTestingModule({
+      controllers: [CreateUserService],
+      providers: [ 
+        {
+          provide: CACHE_MANAGER,
+          useValue: {
+            set: jest.fn()
+          }
+        },
+        {
+          provide: UserRepository,
+          useValue: {
+            save: jest.fn()
+          }
+        },
+        {
+          provide: BcryptService,
+          useValue: {
+            hash: jest.fn()
+          }
+        }
+      ],
+    }).compile();
+
+    cacheManager = await moduleRef.get<Cache>(CACHE_MANAGER);
+    userRepository = await moduleRef.get<UserRepository>(UserRepository);
+    bcryptService = await moduleRef.get<BcryptService>(BcryptService);
+    createUserService = await moduleRef.get<CreateUserService>(CreateUserService);
+
+  });
+
+  it('should return new User if success and cache save', async () => {
+
+    const mockUserRepository: User = {
+      id: '123',
+      name: 'Cleber',
+      email: 'valid@email.com.br',
+      password: 'x12s21f10'
+    };
+
+    const user: UserCreate = {
+      name: 'Cleber',
+      email: 'valid@email.com.br',
+      password: 'x12s21f10'
+    };
+    
+    jest.spyOn(bcryptService, 'hash').mockResolvedValue('hash_password');
+    
+    jest.spyOn(userRepository, 'save').mockResolvedValue(mockUserRepository);
+
+    const response = await createUserService.create(user);
+
+    expect(response).toEqual(mockUserRepository);
+
+    expect(cacheManager.set).toHaveBeenCalledWith('123', mockUserRepository);
+
+  });
+})
