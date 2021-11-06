@@ -25,4 +25,15 @@ describe('Utils :: BCryptService', () => {
         expect(response).toBeTruthy();
     });
 
+    it('should return false if password is not correct', async () => {
+        const data = {
+            password: 'cleber',
+            hashPassword: '$2b$10$0LA9.UnNFEkkegj6LxORjurkw7KniZa.Pej63HX5RTJc.7oeMxdE6'
+        }
+        const bcryptSut = new BcryptService();
+        const response = await bcryptSut.compare(data.password, data.hashPassword);
+
+        expect(response).toBeFalsy();
+    });
+
 });
