@@ -17,11 +17,17 @@ export class CreateUserService implements IUserCreate {
 
   public async create(data: UserCreate): Promise<User> {
 
+    const cacheUser = await this.cacheManager.get(data.email);
+
+    if (cacheUser) {
+      throw new Error('User already exists');
+    }
+
     data.password = await this.bcryptService.hash(data.password);
 
     const user = await this.userRepository.save(data);
     if (user.id) {
-      this.cacheManager.set(String(user.id), user);
+      this.cacheManager.set(String(user.email), user);
       this.publisherService.send<any>({ cmd: 'add-user' }, { data: user }).subscribe();
     }
     return user;
