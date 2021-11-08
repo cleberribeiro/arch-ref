@@ -21,7 +21,8 @@ describe('Domain :: Services :: User :: CreateUserService', () => {
         {
           provide: CACHE_MANAGER,
           useValue: {
-            set: jest.fn()
+            set: jest.fn(),
+            get: jest.fn(),
           }
         },
         {
@@ -78,8 +79,34 @@ describe('Domain :: Services :: User :: CreateUserService', () => {
 
     expect(response).toEqual(mockUserRepository);
 
-    expect(cacheManager.set).toHaveBeenCalledWith('123', mockUserRepository);
+    expect(cacheManager.set).toHaveBeenCalledWith('valid@email.com.br', mockUserRepository);
     expect(publisherService.send).toHaveBeenCalledWith({ cmd: 'add-user' }, { data: mockUserRepository });
 
   });
+
+  it('should throw error User already exists', async () => {
+    const mockUserRepository: User = {
+      id: '123',
+      name: 'Cleber',
+      email: 'valid@email.com.br',
+      password: 'x12s21f10'
+    };
+
+    const user: UserCreate = {
+      name: 'Cleber',
+      email: 'valid@email.com.br',
+      password: 'x12s21f10'
+    };
+    
+    jest.spyOn(cacheManager, 'get').mockResolvedValue(mockUserRepository);
+    
+    try {
+      expect(await createUserService.create(user)).toThrowError('User already exists');
+    } catch(error) {
+      expect(error).toEqual(Error('User already exists'));
+    }
+    
+
+  });
+
 })
