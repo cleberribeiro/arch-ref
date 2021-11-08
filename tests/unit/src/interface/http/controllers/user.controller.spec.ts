@@ -83,7 +83,6 @@ describe('Interface :: http :: controllers :: user :: UserController', () => {
 
     });
 
-    // it('should return missing password message if password not provided', async () => { });
   })
 
 });
