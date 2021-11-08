@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './modules/database.module';
 import { AmqpModule } from './modules/amqp.module';
 import { SubscriberController } from './interface/amqp/inbound/controllers/subscribers.controller';
+import { BcryptService } from './utils/bcrypt/bcrypt.service';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -11,6 +12,6 @@ import { SubscriberController } from './interface/amqp/inbound/controllers/subsc
     AmqpModule
   ],
   controllers: [SubscriberController],
-  providers: [],
+  providers: [BcryptService],
 })
 export class AppModule {}
