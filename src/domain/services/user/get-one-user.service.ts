@@ -12,7 +12,7 @@ export class GetOneUserService implements IUserGetOne {
   ) {}
 
   public async findById(id: ObjectID): Promise<User> {
-    this.logger.log('Call service', 'GetAllUserService.findById');
+    this.logger.log('Call service', 'GetOneUserService.findById');
     return this.userRepository.findById(id);
   }
 }
