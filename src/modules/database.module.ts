@@ -10,6 +10,8 @@ import { UpdateUserService } from 'src/domain/services/user/update-user.service'
 import { typeormConfig } from 'src/infrastructure/configs/typeormconfig';
 import { UserRepository } from 'src/infrastructure/repository/user.repository';
 import { UserController } from 'src/interface/http/controllers/user.controller';
+import { AmqpModule } from './amqp.module';
+import { BcryptService } from 'src/utils/bcrypt/bcrypt.service';
 
 @Module({
   imports: [
@@ -19,7 +21,8 @@ import { UserController } from 'src/interface/http/controllers/user.controller';
       store: redisStore,
       host: 'redis',
       port: 6379,
-    })
+    }),
+    AmqpModule
   ],
   controllers: [UserController],
   providers: [
@@ -29,6 +32,7 @@ import { UserController } from 'src/interface/http/controllers/user.controller';
     UpdateUserService,
     RemoveUserService,
     UserRepository,
+    BcryptService,
     Logger
   ],
   exports: [
