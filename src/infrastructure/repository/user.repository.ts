@@ -21,6 +21,11 @@ export class UserRepository {
     return this.mongoRepository.find();
   }
 
+  public async find(conditionals: any): Promise<User[]> {
+    this.logger.log('Call UserRepository', 'UserRepository.find');
+    return this.mongoRepository.find(conditionals);
+  }
+
   public async findById(id: ObjectIDType): Promise<User> {
     this.logger.log('Call UserRepository', 'UserRepository.findById');
     return await this.mongoRepository.findOneOrFail({ where: { _id: new ObjectID(id) } });
