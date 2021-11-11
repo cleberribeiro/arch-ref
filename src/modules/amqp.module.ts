@@ -30,5 +30,8 @@ import PublisherController from 'src/interface/amqp/outbound/controllers/publish
       inject: [ConfigService],
     }
   ],
+  exports: [
+    'AMQP_SERVICE'
+  ]
 })
 export class AmqpModule {}
