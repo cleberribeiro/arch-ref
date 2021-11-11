@@ -26,7 +26,7 @@ describe('Domain :: Services :: User :: CreateUserService', () => {
           }
         },
         {
-          provide: 'AMQP_SERVICE',
+          provide: 'AMQP_USERS_SERVICE',
           useValue: {
             send: jest.fn()
           }
@@ -47,7 +47,7 @@ describe('Domain :: Services :: User :: CreateUserService', () => {
     }).compile();
 
     cacheManager = await moduleRef.get<Cache>(CACHE_MANAGER);
-    publisherService = await moduleRef.get<ClientProxy>('AMQP_SERVICE');
+    publisherService = await moduleRef.get<ClientProxy>('AMQP_USERS_SERVICE');
     userRepository = await moduleRef.get<UserRepository>(UserRepository);
     bcryptService = await moduleRef.get<BcryptService>(BcryptService);
     createUserService = await moduleRef.get<CreateUserService>(CreateUserService);
