@@ -21,7 +21,7 @@ export class UserController {
       this.logger.log('Creating a new User', 'UserController.create');
       return await this.createUserService.create(user);
     } catch (error) {
-      this.logger.log('Error creating a new User', 'UserController.create');
+      this.logger.log(`Error creating a new User', 'UserController.create`);
       throw new InternalServerErrorException('Internal error');
     }
   }
@@ -47,4 +47,26 @@ export class UserController {
       throw new InternalServerErrorException('Internal error');
     }
   }
+
+  // @Put('/:id')
+  // async update(@Param('id') id: ObjectID, @Body() data: UserUpdate): Promise<User> {
+  //   try {
+  //     this.logger.log('Starting Update User', 'UserController.update');
+  //     return await this.updateUserService.update(id, data);
+  //   } catch (error) {
+  //     this.logger.error('Error Update User', error);
+  //     throw new InternalServerErrorException('Internal error');
+  //   }
+  // }
+
+  // @Delete('/:id')
+  // async remove(@Param('id') id: ObjectID): Promise<void> {
+  //   try {
+  //     this.logger.log('Starting remove User', 'UserController.remove');
+  //     return await this.removeUserService.remove(id);
+  //   } catch (error) {
+  //     this.logger.error('Error remove User', error);
+  //     throw new InternalServerErrorException('Internal error');
+  //   }
+  // }
 }
