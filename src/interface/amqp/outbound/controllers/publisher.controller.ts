@@ -9,7 +9,7 @@ import {
   @Controller('publisher')
   export default class PublisherController {
     constructor(
-      @Inject('AMQP_SERVICE') private publisherService: ClientProxy,
+      @Inject('AMQP_USERS_SERVICE') private publisherService: ClientProxy,
     ) {}
 
     async onApplicationBootstrap() {
