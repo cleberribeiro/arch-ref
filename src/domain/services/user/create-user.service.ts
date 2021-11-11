@@ -10,26 +10,28 @@ export class CreateUserService implements IUserCreate {
 
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    @Inject('AMQP_SERVICE') private publisherService: ClientProxy,
+    @Inject('AMQP_USERS_SERVICE') private publisherService: ClientProxy,
     private userRepository: UserRepository,
     private bcryptService: BcryptService
   ) {}
 
-  public async create(data: UserCreate): Promise<User> {
+  public async create(data: UserCreate): Promise<User | any> {
 
-    const cacheUser = await this.cacheManager.get(data.email);
+    const userExist = await this.userRepository.find({ email: data.email });
 
-    if (cacheUser) {
-      throw new Error('User already exists');
+    if (userExist.length > 0) {
+      return { message: 'User already exists in database', status: 400 };
     }
 
     data.password = await this.bcryptService.hash(data.password);
 
     const user = await this.userRepository.save(data);
+
     if (user.id) {
-      this.cacheManager.set(String(user.email), user);
+      await this.cacheManager.set(user.email, user, { ttl: 0 });
       this.publisherService.send<any>({ cmd: 'add-user' }, { data: user }).subscribe();
     }
+
     return user;
   }
 }
