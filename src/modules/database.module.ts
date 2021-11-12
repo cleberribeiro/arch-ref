@@ -12,11 +12,14 @@ import { UserRepository } from 'src/infrastructure/repository/user.repository';
 import { UserController } from 'src/interface/http/controllers/user.controller';
 import { AmqpModule } from './amqp.module';
 import { BcryptService } from 'src/utils/bcrypt/bcrypt.service';
+import { PasswordResetService } from 'src/domain/services/password-reset/password-reset.service';
+import { PasswordResetEntity } from 'src/domain/entities/password-reset/password-reset.entity';
+import { PasswordResetRepository } from 'src/infrastructure/repository/password-reset.repository';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeormConfig),
-    TypeOrmModule.forFeature([UserEntity]),
+    TypeOrmModule.forFeature([UserEntity, PasswordResetEntity]),
     CacheModule.register({
       store: redisStore,
       host: 'redis',
@@ -32,7 +35,9 @@ import { BcryptService } from 'src/utils/bcrypt/bcrypt.service';
     UpdateUserService,
     RemoveUserService,
     UserRepository,
+    PasswordResetRepository,
     BcryptService,
+    PasswordResetService,
     Logger
   ],
   exports: [
@@ -41,6 +46,8 @@ import { BcryptService } from 'src/utils/bcrypt/bcrypt.service';
     GetOneUserService, 
     UpdateUserService, 
     RemoveUserService, 
+    PasswordResetService,
+    PasswordResetRepository,
     UserRepository
   ]
 })
