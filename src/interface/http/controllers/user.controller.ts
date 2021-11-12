@@ -5,6 +5,9 @@ import { UserCreateDto } from '../dto/user.dto';
 import { GetAllUserService } from 'src/domain/services/user/get-all-user.service';
 import { GetOneUserService } from 'src/domain/services/user/get-one-user.service';
 import { ObjectID } from 'typeorm';
+import { PasswordResetDto } from '../dto/password-reset.dto';
+import { PasswordResetService } from 'src/domain/services/password-reset/password-reset.service';
+import { PasswordDto } from '../dto/password.dto';
 
 @Controller('user')
 export class UserController {
@@ -12,6 +15,7 @@ export class UserController {
     private createUserService: CreateUserService,
     private getAllUserService: GetAllUserService,
     private getOneUserService: GetOneUserService,
+    private passwordResetService: PasswordResetService,
     private logger: Logger
   ) {}
   
@@ -45,6 +49,24 @@ export class UserController {
     } catch (error) {
       this.logger.error('Error Get All User', error);
       throw new InternalServerErrorException('Internal error');
+    }
+  }
+
+  @Post('/password/reset')
+  async passwordReset(@Body() body: PasswordResetDto): Promise<void> {
+    try {
+      await this.passwordResetService.execute(body.email)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  @Post('/password/reset/:uuid')
+  async passwordResetConfirm(@Body() body: PasswordDto, @Param() param: any): Promise<void> {
+    try {
+      await this.passwordResetService.changePassword(param.uuid, body.password)
+    } catch (error) {
+      console.log(error);
     }
   }
 
