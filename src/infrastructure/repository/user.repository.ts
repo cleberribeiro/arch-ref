@@ -36,6 +36,11 @@ export class UserRepository {
     return await this.mongoRepository.updateOne({ _id: new ObjectID(id) }, { $set: data }, { upsert: true } );
   }
 
+  public async partialUpdate(email: string, data: any): Promise<any> {
+    this.logger.log('Call UserRepository', 'UserRepository.partialUpdate');
+    return await this.mongoRepository.update({ email: email }, data);
+  }
+
   public async remove(id: ObjectIDType): Promise<any> {
     this.logger.log('Call UserRepository', 'UserRepository.remove');
     return await this.mongoRepository.findOneAndDelete({ _id: new ObjectID(id) });
