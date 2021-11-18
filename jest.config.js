@@ -5,9 +5,10 @@ module.exports = {
     'coverageReporters': ['json', ['lcov', {'projectRoot': './coverage'}], 'text'],
     coverageThreshold: {
       'global': {
-        'functions': 5,
-        'lines': 5,
-        'statements': 5
+        'functions': 90,
+        'lines': 90,
+        'statements': 90,
+        'branch': 90
       }
     },
     moduleDirectories: [
