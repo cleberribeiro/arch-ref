@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { PasswordReset } from 'src/domain/protocols/password-reset/password-reset.interface';
 import { PasswordResetRepository } from 'src/infrastructure/repository/password-reset.repository';
@@ -22,7 +22,7 @@ export class PasswordResetService {
     const result = await this.verifyEmailExists(data);
 
     if (!result) {
-      return { message: 'E-mail not exists in database', status: 404 };
+      throw new NotFoundException('E-mail not exists in database');
     }
 
     const uuid = uuidv4();
@@ -30,13 +30,13 @@ export class PasswordResetService {
     const pswReset: PasswordReset = {
       uuid: uuid,
       email: data,
-      link: `http://localhost:3000/user/password/reset/${uuid}`,
+      link: `${process.env.BASE_URL}:${process.env.PORT}/${process.env.URL_RESET_PASSWORD}/${uuid}`,
       expireIn: dayjs().add(1, 'h').toISOString()
     }
 
     const message = await this.pswResetRepository.save(pswReset);
     if (!message) {
-      return { message: 'Something going wrong', status: 500 };
+      throw new InternalServerErrorException('Something going wrong');
     }
 
     this.sendMessage(message);
@@ -46,11 +46,11 @@ export class PasswordResetService {
 
     const reset = await this.pswResetRepository.find({ uuid: uuid });
     if (reset.length === 0) {
-      return { message: 'Something going wrong', status: 500 };
+      throw new InternalServerErrorException('Something going wrong');
     }
 
     if (dayjs().toISOString() > reset[0].expireIn) {
-      return { message: 'Token time expired', status: 417 };
+      throw new UnauthorizedException('Token time expired');
     }
 
     const newPassword = await this.bcryptService.hash(password);
