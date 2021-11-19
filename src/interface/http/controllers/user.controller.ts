@@ -31,43 +31,23 @@ export class UserController {
   }
 
   @Get('/')
-  async getAllUser(): Promise<any> {
-    try {
-      this.logger.log('Starting Get All User', 'UserController.getAllUser');
-      return this.getAllUserService.findAll();
-    } catch (error) {
-      this.logger.error('Error Get All User', error);
-      throw new InternalServerErrorException('Internal error');
-    }
+  async getAllUser(): Promise<User[]> {
+    return await this.getAllUserService.findAll();
   }
 
   @Get('/:id')
   async findById(@Param('id') id: ObjectID): Promise<User> {
-    try {
-      this.logger.log('Starting Get All User', 'UserController.getAllUser');
-      return await this.getOneUserService.findById(id);
-    } catch (error) {
-      this.logger.error('Error Get All User', error);
-      throw new InternalServerErrorException('Internal error');
-    }
+    return await this.getOneUserService.findById(id);
   }
 
   @Post('/password/reset')
   async passwordReset(@Body() body: PasswordResetDto): Promise<void> {
-    try {
-      await this.passwordResetService.execute(body.email)
-    } catch (error) {
-      console.log(error);
-    }
+    await this.passwordResetService.execute(body.email);
   }
 
   @Post('/password/reset/:uuid')
   async passwordResetConfirm(@Body() body: PasswordDto, @Param() param: any): Promise<void> {
-    try {
-      await this.passwordResetService.changePassword(param.uuid, body.password)
-    } catch (error) {
-      console.log(error);
-    }
+    await this.passwordResetService.changePassword(param.uuid, body.password);
   }
 
   // @Put('/:id')
