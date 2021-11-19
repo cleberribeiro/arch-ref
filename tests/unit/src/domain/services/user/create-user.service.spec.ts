@@ -73,7 +73,7 @@ describe('Domain :: Services :: User :: CreateUserService', () => {
     
     jest.spyOn(userRepository, 'save').mockResolvedValue(mockUserRepository);
 
-    jest.spyOn(publisherService, 'send').mockReturnValue({ subscribe: () => {} })
+    jest.spyOn(publisherService, 'send').mockReturnValue({ subscribe: () => {} });
 
     const response = await createUserService.create(user);
 
