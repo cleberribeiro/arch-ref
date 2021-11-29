@@ -13,7 +13,13 @@ export class UserRepository {
   ) {}
 
   public async save(data: UserCreate): Promise<User> {
-    return await this.mongoRepository.save(new UserEntity(data));
+    const response = await this.mongoRepository.save(new UserEntity(data));
+    if (!response) {
+      this.logger.log(`Not save User in database [${response}]`, 'UserRepository.save');
+      return null;
+    }
+    this.logger.log(`User created with success`, 'UserRepository.save');
+    return response;
   }
 
   public async findAll(): Promise<User[]> {
